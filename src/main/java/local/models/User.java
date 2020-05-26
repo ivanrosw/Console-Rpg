@@ -1,16 +1,20 @@
 package local.models;
 
+import java.util.List;
+
 public class User {
+    
     private long id;
     private String name;
-    private String encryptedPassword;
+    private String password;
+    private List<Long> charactersId;
 
     public User() {
     }
 
-    public User(String name, String encryptedPassword) {
+    public User(String name, String password) {
         this.name = name;
-        this.encryptedPassword = encryptedPassword;
+        this.password = password;
     }
 
     public long getId() {
@@ -29,11 +33,19 @@ public class User {
         this.name = name;
     }
 
-    public String getEncryptedPassword() {
-        return encryptedPassword;
+    public String getPassword() {
+        return password;
     }
 
-    public void setEncryptedPassword(String encryptedPassword) {
-        this.encryptedPassword = encryptedPassword;
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<Long> getCharactersId() {
+        return charactersId;
+    }
+
+    public void setCharactersId(List<Long> charactersId) {
+        this.charactersId = charactersId;
     }
 }

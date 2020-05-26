@@ -1,6 +1,6 @@
-package local.managers;
+package local.services;
 
-import local.managers.exceptions.ManagerException;
+import local.services.exceptions.ManagerException;
 import local.models.User;
 
 import java.io.BufferedReader;
@@ -12,12 +12,11 @@ public class ApplicationManager {
     private User user;
 
     public void getLoginMenu() {
-        boolean login = false;
         AuthorizationManager authorizationManager = new AuthorizationManager();
 
         try (BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in))) {
 
-            while (!login) {
+            while (user == null) {
                 System.out.println("1: Login");
                 System.out.println("2: Register");
                 System.out.println("Enter a number to choose option or \"E\" to exit");
@@ -29,16 +28,10 @@ public class ApplicationManager {
                     System.exit(0);
 
                 } else if(userAnswer.equals("1")) {
-                    if(authorizationManager.login()) {
-                        user = authorizationManager.getUser();
-                        login = true;
-                    }
+                    user = authorizationManager.login();
 
                 } else if (userAnswer.equals("2")) {
-                    if(authorizationManager.register()) {
-                        user = authorizationManager.getUser();
-                        login = true;
-                    }
+                    user = authorizationManager.register();
 
                 } else {
                     System.out.println("Entered wrong symbol");
@@ -50,5 +43,9 @@ public class ApplicationManager {
         } catch (IOException e) {
             throw new ManagerException("Internal error", e);
         }
+    }
+
+    public void getMainMenu() {
+
     }
 }

@@ -1,4 +1,4 @@
-package local.managers.exceptions;
+package local.services.exceptions;
 
 public class ManagerException extends RuntimeException {
 
