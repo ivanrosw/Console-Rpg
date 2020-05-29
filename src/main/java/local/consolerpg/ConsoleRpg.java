@@ -1,6 +1,6 @@
-package local;
+package local.consolerpg;
 
-import local.services.ApplicationManager;
+import local.consolerpg.managers.ApplicationManager;
 
 public class ConsoleRpg {
 

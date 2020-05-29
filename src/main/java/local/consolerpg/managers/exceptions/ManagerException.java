@@ -1,4 +1,4 @@
-package local.services.exceptions;
+package local.consolerpg.managers.exceptions;
 
 public class ManagerException extends RuntimeException {
 

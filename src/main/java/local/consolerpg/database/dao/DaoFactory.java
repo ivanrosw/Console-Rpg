@@ -1,6 +1,6 @@
-package local.database.dao;
+package local.consolerpg.database.dao;
 
-import local.database.dao.implementations.UserDaoImpl;
+import local.consolerpg.database.dao.implementations.UserDaoImpl;
 
 public class DaoFactory {
 

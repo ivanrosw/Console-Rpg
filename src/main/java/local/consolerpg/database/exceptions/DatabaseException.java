@@ -1,4 +1,4 @@
-package local.database.exceptions;
+package local.consolerpg.database.exceptions;
 
 public class DatabaseException extends RuntimeException {
 

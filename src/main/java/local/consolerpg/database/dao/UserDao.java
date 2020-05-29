@@ -1,6 +1,6 @@
-package local.database.dao;
+package local.consolerpg.database.dao;
 
-import local.models.User;
+import local.consolerpg.models.User;
 
 import java.util.List;
 

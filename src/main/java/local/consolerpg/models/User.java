@@ -1,4 +1,4 @@
-package local.models;
+package local.consolerpg.models;
 
 import java.util.List;
 

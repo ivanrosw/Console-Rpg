@@ -1,10 +1,13 @@
-package local.services;
+package local.consolerpg.managers;
 
-import local.database.dao.DaoFactory;
-import local.database.dao.UserDao;
-import local.database.exceptions.DaoException;
-import local.services.exceptions.ManagerException;
-import local.models.User;
+import local.consolerpg.database.dao.DaoFactory;
+import local.consolerpg.database.dao.UserDao;
+import local.consolerpg.database.exceptions.DaoException;
+import local.consolerpg.database.exceptions.DatabaseException;
+import local.consolerpg.managers.exceptions.AuthorizationException;
+import local.consolerpg.models.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,8 +15,10 @@ import java.io.InputStreamReader;
 
 class AuthorizationManager {
 
-    User login() {
+    private static final Logger logger = LoggerFactory.getLogger(AuthorizationManager.class);
 
+    User login() {
+        logger.debug("Start logging in");
         BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
         try {
             System.out.println("Enter username to login or \"E\" to cancel authorization");
@@ -25,15 +30,17 @@ class AuthorizationManager {
             }
 
             UserDao userDao = DaoFactory.getUserDao();
+            logger.debug("Checking userName: {} existence in database", userAnswer);
             if (!userDao.isExistsUsername(userAnswer)) {
                 System.out.println("User with username \"" + userAnswer + "\" not found");
+                logger.info("User {} not found", userAnswer);
                 System.out.println();
                 return null;
             }
 
             String username = userAnswer;
 
-            while(true) {
+            while (true) {
                 System.out.println("Enter password or \"E\" to cancel authorization");
                 userAnswer = consoleReader.readLine();
                 System.out.println();
@@ -45,27 +52,35 @@ class AuthorizationManager {
                 String password = userAnswer;
                 User user = new User(username, password);
 
-                if(userDao.isCorrectUserPassword(user)) {
+                logger.debug("Checking password to userName: {}", username);
+                if (userDao.isCorrectUserPassword(user)) {
                     user.setId(userDao.getIdByName(user.getName()));
                     user.setCharactersId(userDao.getCharactersId(user.getId()));
                     System.out.println("Login successful");
                     System.out.println();
+                    logger.info("Logging userName: {} in complete", user.getName());
                     return user;
                 } else {
                     System.out.println("Entered wrong password");
+                    logger.info("Entered wrong password to userName: {}", username);
                     System.out.println();
                 }
             }
 
         } catch (IOException e) {
-            throw new ManagerException("Internal error", e);
+            logger.error("Error with consoleReader", e);
+            throw new AuthorizationException("Internal error", e);
         } catch (DaoException e) {
-            throw new ManagerException("Exception in DAO layer", e);
+            logger.warn("Logging in failed", e);
+            throw new AuthorizationException("Logging in failed", e);
+        } catch (DatabaseException e) {
+            logger.warn("Logging in failed", e);
+            throw new AuthorizationException("Connection failed", e);
         }
     }
 
     User register() {
-
+        logger.debug("Start registration");
         BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
         try {
             System.out.println("Enter username to register or \"E\" to cancel registration");
@@ -77,8 +92,10 @@ class AuthorizationManager {
             }
 
             UserDao userDao = DaoFactory.getUserDao();
+            logger.debug("Checking userName: {} existence in database", userAnswer);
             if (userDao.isExistsUsername(userAnswer)) {
                 System.out.println("User with username \"" + userAnswer + "\" already exist");
+                logger.info("User {} already exist", userAnswer);
                 System.out.println();
                 return null;
             }
@@ -99,12 +116,18 @@ class AuthorizationManager {
             userDao.add(user);
             System.out.println("Registration successful");
             System.out.println();
+            logger.info("Registration userName: {} complete", user.getName());
             return user;
 
         } catch (IOException e) {
-            throw new ManagerException("Internal error", e);
+            logger.error("ConsoleReader error", e);
+            throw new AuthorizationException("Internal error", e);
         } catch (DaoException e) {
-            throw new ManagerException("Exception in DAO layer", e);
+            logger.warn("Registration failed", e);
+            throw new AuthorizationException("Registration failed", e);
+        } catch (DatabaseException e) {
+            logger.warn("Registration failed", e);
+            throw new AuthorizationException("Connection failed", e);
         }
     }
 }

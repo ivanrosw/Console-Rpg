@@ -1,4 +1,4 @@
-package local.models.game;
+package local.consolerpg.models.game;
 
 public interface Item{
 

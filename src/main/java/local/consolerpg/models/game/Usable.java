@@ -1,4 +1,4 @@
-package local.models.game;
+package local.consolerpg.models.game;
 
 public class Usable implements Item {
 

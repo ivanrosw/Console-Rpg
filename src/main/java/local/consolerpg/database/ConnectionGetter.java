@@ -1,11 +1,8 @@
-package local.database;
+package local.consolerpg.database;
 
-import local.database.exceptions.DatabaseException;
+import local.consolerpg.database.exceptions.DatabaseException;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -15,17 +12,21 @@ public class ConnectionGetter {
 
     private static final String DB_URL_PROP_KEY = "url";
 
+    private ConnectionGetter() {
+    }
+
     public static Connection getConnection() {
-        File dbProp = new File(ConnectionGetter.class.getClassLoader().getResource("database.properties").getFile());
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        InputStream dbStream = classLoader.getResourceAsStream("database.properties");
 
         try {
             Properties properties = new Properties();
-            properties.load(new FileReader(dbProp));
+            properties.load(dbStream);
 
             return DriverManager.getConnection(properties.getProperty(DB_URL_PROP_KEY), properties);
 
         } catch (FileNotFoundException e) {
-            throw new DatabaseException(dbProp.getName() + " file not found", e);
+            throw new DatabaseException("Database properties file not found", e);
         } catch (IOException e) {
             throw new DatabaseException("Internal error", e);
         } catch (SQLException e) {
