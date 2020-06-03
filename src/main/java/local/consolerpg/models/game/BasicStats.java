@@ -1,9 +1,9 @@
 package local.consolerpg.models.game;
 
-public class BasicStats {
+public abstract class BasicStats {
 
     private int level;
-    private int strange;
+    private int strength;
     private int agility;
     private int intelligence;
 
@@ -15,12 +15,12 @@ public class BasicStats {
         this.level = level;
     }
 
-    public int getStrange() {
-        return strange;
+    public int getStrength() {
+        return strength;
     }
 
-    public void setStrange(int strange) {
-        this.strange = strange;
+    public void setStrength(int strength) {
+        this.strength = strength;
     }
 
     public int getAgility() {

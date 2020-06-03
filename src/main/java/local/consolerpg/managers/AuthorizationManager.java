@@ -4,6 +4,7 @@ import local.consolerpg.database.dao.DaoFactory;
 import local.consolerpg.database.dao.UserDao;
 import local.consolerpg.database.exceptions.DaoException;
 import local.consolerpg.database.exceptions.DatabaseException;
+import local.consolerpg.database.exceptions.PasswordEncryptionException;
 import local.consolerpg.managers.exceptions.AuthorizationException;
 import local.consolerpg.models.User;
 import org.slf4j.Logger;
@@ -11,15 +12,13 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 class AuthorizationManager {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthorizationManager.class);
 
-    User login() {
+    User login(BufferedReader consoleReader) {
         logger.debug("Start logging in");
-        BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
         try {
             System.out.println("Enter username to login or \"E\" to cancel authorization");
             String userAnswer = consoleReader.readLine();
@@ -55,7 +54,6 @@ class AuthorizationManager {
                 logger.debug("Checking password to userName: {}", username);
                 if (userDao.isCorrectUserPassword(user)) {
                     user.setId(userDao.getIdByName(user.getName()));
-                    user.setCharactersId(userDao.getCharactersId(user.getId()));
                     System.out.println("Login successful");
                     System.out.println();
                     logger.info("Logging userName: {} in complete", user.getName());
@@ -76,12 +74,14 @@ class AuthorizationManager {
         } catch (DatabaseException e) {
             logger.warn("Logging in failed", e);
             throw new AuthorizationException("Connection failed", e);
+        } catch (PasswordEncryptionException e) {
+            logger.error("Problem with encryption password", e);
+            throw new AuthorizationException("Problem with encryption password", e);
         }
     }
 
-    User register() {
+    User register(BufferedReader consoleReader) {
         logger.debug("Start registration");
-        BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
         try {
             System.out.println("Enter username to register or \"E\" to cancel registration");
             String userAnswer = consoleReader.readLine();
@@ -128,6 +128,9 @@ class AuthorizationManager {
         } catch (DatabaseException e) {
             logger.warn("Registration failed", e);
             throw new AuthorizationException("Connection failed", e);
+        } catch (PasswordEncryptionException e) {
+            logger.error("Problem with encryption password", e);
+            throw new AuthorizationException("Problem with encryption password", e);
         }
     }
 }

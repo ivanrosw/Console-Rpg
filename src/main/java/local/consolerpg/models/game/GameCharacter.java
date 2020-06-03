@@ -2,10 +2,11 @@ package local.consolerpg.models.game;
 
 import java.util.List;
 
-public class Character extends BasicHero{
+public class GameCharacter extends BasicHero{
 
     private long id;
     private long userId;
+    private int gold;
     private long enemiesKill;
     private long questsDone;
     private int gameCount;
@@ -26,6 +27,14 @@ public class Character extends BasicHero{
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public int getGold() {
+        return gold;
+    }
+
+    public void setGold(int gold) {
+        this.gold = gold;
     }
 
     public long getEnemiesKill() {
@@ -66,5 +75,12 @@ public class Character extends BasicHero{
 
     public void setBag(List<Item> bag) {
         this.bag = bag;
+    }
+
+    @Override
+    public String toString() {
+        return "Name: " + this.getName() +
+                " Class: " + this.getHeroClass() +
+                " Level: " + this.getLevel();
     }
 }

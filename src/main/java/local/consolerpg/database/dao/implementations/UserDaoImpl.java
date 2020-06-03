@@ -9,8 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserDaoImpl implements UserDao {
 
@@ -21,7 +19,6 @@ public class UserDaoImpl implements UserDao {
     private static final String SQL_CHECK_USERNAME_AND_PASSWORD_QUERY = "SELECT COUNT(*) FROM registered_users " +
             "WHERE username = ? and password = ?";
     private static final String SQL_GET_ID_QUERY = "SELECT id FROM registered_users WHERE username = ?";
-    private static final String SQL_GET_CHARACTERS_ID_QUERY = "SELECT id FROM users_characters WHERE user_id = ?";
 
     @Override
     public void add(User user) {
@@ -37,6 +34,7 @@ public class UserDaoImpl implements UserDao {
                 generatedKeys.next();
                 user.setId(generatedKeys.getLong(1));
             }
+            logger.debug("Added user: {} with id: {} to database", user.getName(), user.getId());
 
         } catch (SQLException e) {
             logger.warn("Add user: {} to database failed", user.getName(), e);
@@ -54,6 +52,7 @@ public class UserDaoImpl implements UserDao {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 resultSet.next();
+                logger.debug("Find {} users with name: {}", resultSet.getInt(1), username);
                 return resultSet.getInt(1) == 1;
             }
 
@@ -74,6 +73,7 @@ public class UserDaoImpl implements UserDao {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 resultSet.next();
+                logger.debug("Find {} users {} with entered password", resultSet.getInt(1), user.getName());
                 return resultSet.getInt(1) == 1;
             }
 
@@ -93,34 +93,13 @@ public class UserDaoImpl implements UserDao {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 resultSet.next();
+                logger.debug("Find user: {} with id: {}", username, resultSet.getLong(1));
                 return resultSet.getLong(1);
             }
 
         } catch (SQLException e) {
             logger.warn("Get userName: {} id failed", username, e);
             throw new DaoException("Get user id failed", e);
-        }
-    }
-
-    @Override
-    public List<Long> getCharactersId(long userId) {
-        logger.debug("Getting characters id by userId: {}", userId);
-        try (Connection connection = ConnectionGetter.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_GET_CHARACTERS_ID_QUERY)) {
-
-            statement.setLong(1, userId);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                List<Long> charactersId = new ArrayList<>();
-                while (resultSet.next()) {
-                    charactersId.add(resultSet.getLong("id"));
-                }
-                return charactersId;
-            }
-
-        } catch (SQLException e) {
-            logger.warn("Get characters id by userId: {} failed", userId, e);
-            throw new DaoException("Get characters id failed", e);
         }
     }
 }

@@ -2,7 +2,7 @@ package local.consolerpg.models.game;
 
 import java.util.List;
 
-public class BasicHero extends BasicStats {
+public abstract class BasicHero extends BasicStats {
 
     private String name;
     private String heroClass;
