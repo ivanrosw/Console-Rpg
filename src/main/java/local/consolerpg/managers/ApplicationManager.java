@@ -5,6 +5,7 @@ import local.consolerpg.database.dao.GameCharacterDao;
 import local.consolerpg.game.concepts.HeroClasses;
 import local.consolerpg.managers.exceptions.AuthorizationException;
 import local.consolerpg.managers.exceptions.ManagerException;
+import local.consolerpg.managers.game.GameManager;
 import local.consolerpg.models.User;
 import local.consolerpg.models.game.GameCharacter;
 import org.slf4j.Logger;
@@ -43,10 +44,16 @@ public class ApplicationManager {
                 System.out.println();
 
                 if (userAnswer.equals("1")) {
-                    newGame(consoleReader);
+                    newGame();
+                    if (gameCharacter != null) {
+                        startGame();
+                    }
 
                 } else if (userAnswer.equals("2")) {
-                    getLoadMenu(consoleReader);
+                    getLoadMenu();
+                    if (gameCharacter != null) {
+                        startGame();
+                    }
 
                 } else if (userAnswer.equals("3")) {
                     user = null;
@@ -114,24 +121,12 @@ public class ApplicationManager {
 
     }
 
-    private void getLoadMenu(BufferedReader consoleReader) {
+    private void getLoadMenu() {
         GameCharacterDao gameCharacterDao = DaoFactory.getGameCharacterDao();
         List<GameCharacter> characters = gameCharacterDao.getAllByUserId(user.getId());
 
-        System.out.println("Saves:");
+        printSaves(characters);
 
-        for (int i = 1; i <= MAX_SAVES_COUNT; i++) {
-            int characterIndex = i - 1;
-            System.out.println(i + ":");
-
-            if (characters.size() >= i) {
-                System.out.println(characters.get(characterIndex).toString());
-            } else {
-                System.out.println("---------------------Empty---------------------");
-            }
-        }
-
-        System.out.println();
         boolean isChosen = false;
         try {
             while (!isChosen) {
@@ -151,6 +146,7 @@ public class ApplicationManager {
                     } else if (saveNumber <= characters.size() && saveNumber >= 1) {
                         gameCharacter = characters.get(saveNumber - 1);
                         System.out.println("Loaded " + gameCharacter);
+                        System.out.println();
                         isChosen = true;
 
                     } else {
@@ -167,8 +163,62 @@ public class ApplicationManager {
         }
     }
 
-    private void newGame(BufferedReader consoleReader) {
+    private void printSaves (List<GameCharacter> characters) {
+        System.out.println("Saves:");
+        for (int i = 1; i <= MAX_SAVES_COUNT; i++) {
+            int characterIndex = i - 1;
+            System.out.println(i + ":");
+
+            if (characters.size() >= i) {
+                System.out.println(characters.get(characterIndex).toString());
+            } else {
+                System.out.println("---------------------Empty---------------------");
+            }
+        }
+        System.out.println();
+    }
+
+    private void newGame() {
         try {
+            GameCharacterDao gameCharacterDao = DaoFactory.getGameCharacterDao();
+            List<GameCharacter> characters = gameCharacterDao.getAllByUserId(user.getId());
+
+            long newGameCharacterId = 0;
+            if (characters.size() >= MAX_SAVES_COUNT) {
+                System.out.println("You have max saves count");
+                printSaves(characters);
+
+                boolean isChosen = false;
+                while (!isChosen) {
+                    try {
+                        System.out.println("Enter number of save what you want to use to new game or \"E\" to cancel");
+                        String userAnswer = consoleReader.readLine();
+                        System.out.println();
+
+                        if (userAnswer.equals("E")) {
+                            return;
+                        }
+
+                        int saveNumber = Integer.parseInt(userAnswer);
+                        if (saveNumber > characters.size() && saveNumber <= MAX_SAVES_COUNT) {
+                            System.out.println("Entered empty slot");
+
+                        } else if (saveNumber <= characters.size() && saveNumber >= 1) {
+                            newGameCharacterId = characters.get(saveNumber - 1).getId();
+                            System.out.println("Chosen " + saveNumber);
+                            System.out.println();
+                            isChosen = true;
+
+                        } else {
+                            System.out.println("Entered wrong number");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Entered wrong symbols");
+                    }
+                }
+
+            }
+
             System.out.println("Enter heroes name");
             String gameCharacterName = consoleReader.readLine();
             System.out.println();
@@ -208,6 +258,9 @@ public class ApplicationManager {
             newGameCharacter.setName(gameCharacterName);
             newGameCharacter.setHeroClass(gameCharacterClass);
             generateNewHero(newGameCharacter);
+            if (newGameCharacterId > 0) {
+                newGameCharacter.setId(newGameCharacterId);
+            }
             gameCharacter = newGameCharacter;
 
         } catch (IOException e) {
@@ -238,7 +291,14 @@ public class ApplicationManager {
         }
     }
 
-    private void startGame(BufferedReader consoleReader, GameCharacter gameCharacter) {
+    private void startGame() {
+        if (gameCharacter != null) {
+            System.out.println("Game using autosave system. Use game buttons to exit. Dont close console.");
+            GameManager gameManager = new GameManager(gameCharacter);
+            gameManager.getTavernMenu(consoleReader);
 
+        } else {
+            throw new ManagerException("Game character not loaded");
+        }
     }
 }
