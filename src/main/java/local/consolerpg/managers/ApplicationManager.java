@@ -28,6 +28,7 @@ public class ApplicationManager {
     private GameCharacter gameCharacter;
 
     public void getMainMenu() {
+        logger.debug("Getting main menu");
         getLoginMenu();
 
         try {
@@ -60,6 +61,7 @@ public class ApplicationManager {
                     getLoginMenu();
 
                 } else if (userAnswer.equals("4")) {
+                    logger.debug("Exiting game");
                     System.out.println("See you next time " + user.getName());
                     working = false;
 
@@ -117,11 +119,12 @@ public class ApplicationManager {
             }
         }
 
+        logger.debug("Authorized as {}", user.getName());
         System.out.println("Welcome " + user.getName());
-
     }
 
     private void getLoadMenu() {
+        logger.debug("Getting load menu");
         GameCharacterDao gameCharacterDao = DaoFactory.getGameCharacterDao();
         List<GameCharacter> characters = gameCharacterDao.getAllByUserId(user.getId());
 
@@ -135,6 +138,7 @@ public class ApplicationManager {
                 System.out.println();
 
                 if (userAnswer.equals("E")) {
+                    logger.debug("Cancel load game character");
                     return;
                 }
 
@@ -145,6 +149,7 @@ public class ApplicationManager {
 
                     } else if (saveNumber <= characters.size() && saveNumber >= 1) {
                         gameCharacter = characters.get(saveNumber - 1);
+                        logger.debug("Loaded {}", gameCharacter);
                         System.out.println("Loaded " + gameCharacter);
                         System.out.println();
                         isChosen = true;
@@ -155,7 +160,6 @@ public class ApplicationManager {
                 } catch (NumberFormatException e) {
                     System.out.println("Entered wrong symbols");
                 }
-
             }
         } catch (IOException e) {
             logger.error("Internal consoleReader problem", e);
@@ -179,10 +183,12 @@ public class ApplicationManager {
     }
 
     private void newGame() {
+        logger.debug("Starting new game");
         try {
             GameCharacterDao gameCharacterDao = DaoFactory.getGameCharacterDao();
             List<GameCharacter> characters = gameCharacterDao.getAllByUserId(user.getId());
 
+            logger.debug("Check saves count");
             long newGameCharacterId = 0;
             if (characters.size() >= MAX_SAVES_COUNT) {
                 System.out.println("You have max saves count");
@@ -191,11 +197,13 @@ public class ApplicationManager {
                 boolean isChosen = false;
                 while (!isChosen) {
                     try {
+                        logger.debug("Choosing save to new game");
                         System.out.println("Enter number of save what you want to use to new game or \"E\" to cancel");
                         String userAnswer = consoleReader.readLine();
                         System.out.println();
 
                         if (userAnswer.equals("E")) {
+                            logger.debug("Canceled new game");
                             return;
                         }
 
@@ -205,6 +213,7 @@ public class ApplicationManager {
 
                         } else if (saveNumber <= characters.size() && saveNumber >= 1) {
                             newGameCharacterId = characters.get(saveNumber - 1).getId();
+                            logger.debug("Chosen save with id: {}", newGameCharacterId);
                             System.out.println("Chosen " + saveNumber);
                             System.out.println();
                             isChosen = true;
@@ -262,6 +271,7 @@ public class ApplicationManager {
                 newGameCharacter.setId(newGameCharacterId);
             }
             gameCharacter = newGameCharacter;
+            logger.debug("Created new {}", gameCharacter);
 
         } catch (IOException e) {
             logger.error("Internal consoleReader problem", e);
@@ -270,6 +280,7 @@ public class ApplicationManager {
     }
 
     private void generateNewHero(GameCharacter gameCharacter) {
+        logger.debug("Generating stats to new {}", gameCharacter);
         gameCharacter.setLevel(1);
         gameCharacter.setGameCount(1);
         gameCharacter.setBag(new ArrayList<>());
@@ -289,9 +300,11 @@ public class ApplicationManager {
             gameCharacter.setAgility(1);
             gameCharacter.setIntelligence(2);
         }
+        logger.debug("Generated {}", gameCharacter);
     }
 
     private void startGame() {
+        logger.debug("Starting game");
         if (gameCharacter != null) {
             System.out.println("Game using autosave system. Use game buttons to exit. Dont close console.");
             GameManager gameManager = new GameManager(gameCharacter);
