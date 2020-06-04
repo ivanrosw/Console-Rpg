@@ -2,7 +2,7 @@ package local.consolerpg.managers;
 
 import local.consolerpg.database.dao.DaoFactory;
 import local.consolerpg.database.dao.GameCharacterDao;
-import local.consolerpg.game.concepts.HeroClasses;
+import local.consolerpg.models.game.concepts.HeroClasses;
 import local.consolerpg.managers.exceptions.AuthorizationException;
 import local.consolerpg.managers.exceptions.ManagerException;
 import local.consolerpg.managers.game.GameManager;
@@ -23,6 +23,8 @@ public class ApplicationManager {
     private static final BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
 
     private static final int MAX_SAVES_COUNT = 3;
+
+    private GameCharacterDao gameCharacterDao = DaoFactory.getGameCharacterDao();
 
     private User user;
     private GameCharacter gameCharacter;
@@ -125,7 +127,7 @@ public class ApplicationManager {
 
     private void getLoadMenu() {
         logger.debug("Getting load menu");
-        GameCharacterDao gameCharacterDao = DaoFactory.getGameCharacterDao();
+        gameCharacter = null;
         List<GameCharacter> characters = gameCharacterDao.getAllByUserId(user.getId());
 
         printSaves(characters);
@@ -184,8 +186,8 @@ public class ApplicationManager {
 
     private void newGame() {
         logger.debug("Starting new game");
+        gameCharacter = null;
         try {
-            GameCharacterDao gameCharacterDao = DaoFactory.getGameCharacterDao();
             List<GameCharacter> characters = gameCharacterDao.getAllByUserId(user.getId());
 
             logger.debug("Check saves count");
@@ -208,10 +210,7 @@ public class ApplicationManager {
                         }
 
                         int saveNumber = Integer.parseInt(userAnswer);
-                        if (saveNumber > characters.size() && saveNumber <= MAX_SAVES_COUNT) {
-                            System.out.println("Entered empty slot");
-
-                        } else if (saveNumber <= characters.size() && saveNumber >= 1) {
+                        if (saveNumber <= characters.size() && saveNumber >= 1) {
                             newGameCharacterId = characters.get(saveNumber - 1).getId();
                             logger.debug("Chosen save with id: {}", newGameCharacterId);
                             System.out.println("Chosen " + saveNumber);
@@ -225,7 +224,6 @@ public class ApplicationManager {
                         System.out.println("Entered wrong symbols");
                     }
                 }
-
             }
 
             System.out.println("Enter heroes name");
@@ -271,7 +269,7 @@ public class ApplicationManager {
                 newGameCharacter.setId(newGameCharacterId);
             }
             gameCharacter = newGameCharacter;
-            logger.debug("Created new {}", gameCharacter);
+            logger.debug("Created new game character {}", gameCharacter);
 
         } catch (IOException e) {
             logger.error("Internal consoleReader problem", e);
@@ -280,7 +278,7 @@ public class ApplicationManager {
     }
 
     private void generateNewHero(GameCharacter gameCharacter) {
-        logger.debug("Generating stats to new {}", gameCharacter);
+        logger.debug("Generating stats to new game character: {}", gameCharacter);
         gameCharacter.setLevel(1);
         gameCharacter.setGameCount(1);
         gameCharacter.setBag(new ArrayList<>());
@@ -300,16 +298,15 @@ public class ApplicationManager {
             gameCharacter.setAgility(1);
             gameCharacter.setIntelligence(2);
         }
-        logger.debug("Generated {}", gameCharacter);
+        logger.debug("Generated stats to new game character {}", gameCharacter);
     }
 
     private void startGame() {
         logger.debug("Starting game");
         if (gameCharacter != null) {
             System.out.println("Game using autosave system. Use game buttons to exit. Dont close console.");
-            GameManager gameManager = new GameManager(gameCharacter);
-            gameManager.getTavernMenu(consoleReader);
-
+            GameManager gameManager = new GameManager(consoleReader, gameCharacter);
+            gameManager.getTavernMenu();
         } else {
             throw new ManagerException("Game character not loaded");
         }

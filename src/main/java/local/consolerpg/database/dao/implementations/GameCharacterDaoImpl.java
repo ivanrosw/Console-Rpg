@@ -21,7 +21,7 @@ public class GameCharacterDaoImpl implements GameCharacterDao {
     private static final Logger logger = LoggerFactory.getLogger(GameCharacterDaoImpl.class);
 
     private static final String SQL_ADD_QUERY = "INSERT INTO users_characters(user_id, name, level, strength, agility, " +
-            "intelligence, hero_class, enemies_kill, quests_done, game_count, gold) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+            "intelligence, hero_class, enemies_kill, quests_done, game_count, gold, stat_points) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
     private static final String SQL_ADD_CHARACTER_EQUIPMENT_QUERY = "INSERT INTO characters_equipments(character_id, name, " +
             "hero_class, body_part, level, strength, agility, intelligence, gold) VALUES (?,?,?,?,?,?,?,?,?)";
     private static final String SQL_ADD_CHARACTER_BAG_USABLE_QUERY = "INSERT INTO characters_bag_usable(character_id, name, " +
@@ -34,7 +34,7 @@ public class GameCharacterDaoImpl implements GameCharacterDao {
     private static final String SQL_GET_ALL_CHARACTERS_BAG_USABLE_QUERY = "SELECT * FROM characters_bag_usable WHERE character_id = ?";
     private static final String SQL_GET_ALL_CHARACTERS_BAG_EQUIPMENTS_QUERY = "SELECT * FROM characters_bag_equipments WHERE character_id = ?";
     private static final String SQL_UPDATE_QUERY = "UPDATE users_characters SET name=?, level=?, strength=?, agility=?, intelligence=?, " +
-            "hero_class=?, enemies_kill=?, quests_done=?, game_count=?, gold=? WHERE id = ?";
+            "hero_class=?, enemies_kill=?, quests_done=?, game_count=?, gold=?, stat_points=? WHERE id = ?";
     private static final String SQL_DELETE_CHARACTER_EQUIPMENT_QUERY = "DELETE FROM characters_equipments WHERE character_id = ?";
     private static final String SQL_DELETE_CHARACTER_BAG_USABLE_QUERY = "DELETE FROM characters_bag_usable WHERE character_id = ?";
     private static final String SQL_DELETE_CHARACTER_BAG_EQUIPMENT_QUERY = "DELETE FROM characters_bag_equipments WHERE character_id = ?";
@@ -56,6 +56,7 @@ public class GameCharacterDaoImpl implements GameCharacterDao {
             statement.setLong(9, gameCharacter.getQuestsDone());
             statement.setInt(10, gameCharacter.getGameCount());
             statement.setLong(11, gameCharacter.getGold());
+            statement.setInt(12, gameCharacter.getStatPoints());
             statement.executeUpdate();
 
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
@@ -147,10 +148,11 @@ public class GameCharacterDaoImpl implements GameCharacterDao {
             statement.setLong(7, gameCharacter.getEnemiesKill());
             statement.setLong(8, gameCharacter.getQuestsDone());
             statement.setInt(9, gameCharacter.getGameCount());
-            statement.setLong(10, gameCharacter.getId());
-            statement.setInt(11, gameCharacter.getGold());
+            statement.setInt(10, gameCharacter.getGold());
+            statement.setInt(11, gameCharacter.getStatPoints());
+            statement.setLong(12, gameCharacter.getId());
 
-            statement.executeUpdate();
+            statement.execute();
 
         } catch (SQLException e) {
             logger.warn("Updating {} in database failed", gameCharacter, e);
@@ -276,6 +278,7 @@ public class GameCharacterDaoImpl implements GameCharacterDao {
                     .withQuestsDone(resultSet.getLong("quests_done"))
                     .withGameCount(resultSet.getInt("game_count"))
                     .withGold(resultSet.getInt("gold"))
+                    .withStatPoints(resultSet.getInt("stat_points"))
                     .build();
         } catch (SQLException e) {
             logger.warn("Getting character from ResultSet failed", e);

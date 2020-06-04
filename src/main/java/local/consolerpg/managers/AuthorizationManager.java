@@ -17,6 +17,8 @@ class AuthorizationManager {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthorizationManager.class);
 
+    private UserDao userDao = DaoFactory.getUserDao();
+
     User login(BufferedReader consoleReader) {
         logger.debug("Start logging in");
         try {
@@ -28,7 +30,6 @@ class AuthorizationManager {
                 return null;
             }
 
-            UserDao userDao = DaoFactory.getUserDao();
             logger.debug("Checking userName: {} existence in database", userAnswer);
             if (!userDao.isExistsUsername(userAnswer)) {
                 System.out.println("User with username \"" + userAnswer + "\" not found");
@@ -91,7 +92,6 @@ class AuthorizationManager {
                 return null;
             }
 
-            UserDao userDao = DaoFactory.getUserDao();
             logger.debug("Checking userName: {} existence in database", userAnswer);
             if (userDao.isExistsUsername(userAnswer)) {
                 System.out.println("User with username \"" + userAnswer + "\" already exist");

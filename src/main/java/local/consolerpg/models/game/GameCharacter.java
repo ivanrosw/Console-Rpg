@@ -6,6 +6,7 @@ public class GameCharacter extends BasicHero{
 
     private long id;
     private long userId;
+    private int statPoints;
     private int gold;
     private long enemiesKill;
     private long questsDone;
@@ -27,6 +28,14 @@ public class GameCharacter extends BasicHero{
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public int getStatPoints() {
+        return statPoints;
+    }
+
+    public void setStatPoints(int statPoints) {
+        this.statPoints = statPoints;
     }
 
     public int getGold() {

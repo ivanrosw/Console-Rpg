@@ -90,6 +90,11 @@ public class GameCharacterBuilder {
         return this;
     }
 
+    public GameCharacterBuilder withStatPoints(int statPoints) {
+        gameCharacter.setStatPoints(statPoints);
+        return this;
+    }
+
     public GameCharacter build() {
         return gameCharacter;
     }

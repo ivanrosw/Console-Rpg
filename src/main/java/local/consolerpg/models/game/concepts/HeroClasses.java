@@ -1,4 +1,4 @@
-package local.consolerpg.game.concepts;
+package local.consolerpg.models.game.concepts;
 
 public enum HeroClasses {
     Warriror,
