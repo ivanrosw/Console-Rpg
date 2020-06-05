@@ -306,13 +306,14 @@ public class GameCharacterManager {
                 String userAnswer = consoleReader.readLine();
                 System.out.println();
 
+                InventoryManager inventoryManager = new InventoryManager(gameCharacter);
                 if (userAnswer.equals("E")) {
                     System.out.println("Taking off equipment canceled");
                     System.out.println();
                     return;
 
                 } else if(userAnswer.equals("1")) {
-                    Equipment head = getEquipment(BodyParts.Head);
+                    Equipment head = inventoryManager.getUsingEquipment(BodyParts.Head);
                     if (head == null) {
                         System.out.println(BodyParts.Head.toString() + " slot is empty");
                         System.out.println();
@@ -325,7 +326,7 @@ public class GameCharacterManager {
                         System.out.println();
                     }
                 } else if(userAnswer.equals("2")) {
-                    Equipment body = getEquipment(BodyParts.Body);
+                    Equipment body = inventoryManager.getUsingEquipment(BodyParts.Body);
                     if (body == null) {
                         System.out.println(BodyParts.Body.toString() + " slot is empty");
                         System.out.println();
@@ -338,7 +339,7 @@ public class GameCharacterManager {
                         System.out.println();
                     }
                 } else if(userAnswer.equals("3")) {
-                    Equipment hands = getEquipment(BodyParts.Hands);
+                    Equipment hands = inventoryManager.getUsingEquipment(BodyParts.Hands);
                     if (hands == null) {
                         System.out.println(BodyParts.Hands.toString() + " slot is empty");
                         System.out.println();
@@ -351,7 +352,7 @@ public class GameCharacterManager {
                         System.out.println();
                     }
                 } else if(userAnswer.equals("4")) {
-                    Equipment legs = getEquipment(BodyParts.Legs);
+                    Equipment legs = inventoryManager.getUsingEquipment(BodyParts.Legs);
                     if (legs == null) {
                         System.out.println(BodyParts.Legs.toString() + " slot is empty");
                         System.out.println();
@@ -364,7 +365,7 @@ public class GameCharacterManager {
                         System.out.println();
                     }
                 } else if(userAnswer.equals("5")) {
-                    Equipment feet = getEquipment(BodyParts.Feet);
+                    Equipment feet = inventoryManager.getUsingEquipment(BodyParts.Feet);
                     if (feet == null) {
                         System.out.println(BodyParts.Feet.toString() + " slot is empty");
                         System.out.println();
@@ -425,17 +426,6 @@ public class GameCharacterManager {
         gameCharacter.setStatPoints(totalPoints);
     }
 
-    private Equipment getEquipment(BodyParts bodyParts) {
-        List<Equipment> equipments = gameCharacter.getEquipments();
-        for (int i = 0; i < equipments.size(); i++) {
-            Equipment equipment = equipments.get(i);
-            if (equipment.getBodyPart().equals(bodyParts.toString())) {
-                return equipment;
-            }
-        }
-        return null;
-    }
-
     private void printEquipment(Equipment equipment) {
         if (equipment == null) {
             System.out.println(EMPTY_SLOT);
@@ -447,20 +437,21 @@ public class GameCharacterManager {
     }
 
     private void printAllEquipments() {
+        InventoryManager inventoryManager = new InventoryManager(gameCharacter);
         System.out.println("Head:");
-        Equipment equipment = getEquipment(BodyParts.Head);
+        Equipment equipment = inventoryManager.getUsingEquipment(BodyParts.Head);
         printEquipment(equipment);
         System.out.println("Body:");
-        equipment = getEquipment(BodyParts.Body);
+        equipment = inventoryManager.getUsingEquipment(BodyParts.Body);
         printEquipment(equipment);
         System.out.println("Hands:");
-        equipment = getEquipment(BodyParts.Hands);
+        equipment = inventoryManager.getUsingEquipment(BodyParts.Hands);
         printEquipment(equipment);
         System.out.println("Legs:");
-        equipment = getEquipment(BodyParts.Legs);
+        equipment = inventoryManager.getUsingEquipment(BodyParts.Legs);
         printEquipment(equipment);
         System.out.println("Feet:");
-        equipment = getEquipment(BodyParts.Feet);
+        equipment = inventoryManager.getUsingEquipment(BodyParts.Feet);
         printEquipment(equipment);
         System.out.println();
     }

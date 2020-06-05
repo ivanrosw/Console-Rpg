@@ -39,4 +39,11 @@ public class Usable implements Item {
     public void setGold(int gold) {
         this.gold = gold;
     }
+
+    @Override
+    public String toString() {
+        return "Name: " + getName() +
+                " Count: " + getCount() +
+                " Gold: " + getGold();
+    }
 }

@@ -12,6 +12,7 @@ public class GameManager {
 
     private GameCharacterDao gameCharacterDao = DaoFactory.getGameCharacterDao();
     private GameCharacterManager gameCharacterManager;
+    private InventoryManager inventoryManager;
     private BufferedReader consoleReader;
     private GameCharacter gameCharacter;
 
@@ -19,6 +20,7 @@ public class GameManager {
         this.consoleReader = consoleReader;
         this.gameCharacter = gameCharacter;
         gameCharacterManager = new GameCharacterManager(consoleReader, gameCharacter);
+        inventoryManager = new InventoryManager(consoleReader, gameCharacter);
     }
 
     public void getTavernMenu() {
@@ -39,7 +41,7 @@ public class GameManager {
                 } else if (userAnswer.equals("1")) {
                     gameCharacterManager.getCharacterMenu();
                 } else if (userAnswer.equals("2")) {
-
+                    inventoryManager.getInventoryMenu();
                 } else if (userAnswer.equals("3")) {
 
                 } else if (userAnswer.equals("4")) {

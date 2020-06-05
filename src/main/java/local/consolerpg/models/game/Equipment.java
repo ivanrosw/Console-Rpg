@@ -38,4 +38,16 @@ public class Equipment extends BasicStats implements Item {
     public void setGold(int gold) {
         this.gold = gold;
     }
+
+    @Override
+    public String toString() {
+        return "Name: " + getName() +
+                "Body part: " + getBodyPart() +
+                " Hero class: " + getHeroClass() +
+                " Level: " + getLevel() +
+                " Strength: " + getStrength() +
+                " Agility: " + getAgility() +
+                " Intelligence: " + getIntelligence() +
+                " Gold: " + getGold();
+    }
 }
