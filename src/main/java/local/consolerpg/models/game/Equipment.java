@@ -42,12 +42,12 @@ public class Equipment extends BasicStats implements Item {
     @Override
     public String toString() {
         return "Name: " + getName() +
-                "Body part: " + getBodyPart() +
-                " Hero class: " + getHeroClass() +
-                " Level: " + getLevel() +
-                " Strength: " + getStrength() +
-                " Agility: " + getAgility() +
-                " Intelligence: " + getIntelligence() +
-                " Gold: " + getGold();
+                "  Body part: " + getBodyPart() +
+                "  Hero class: " + getHeroClass() +
+                "  Level: " + getLevel() +
+                "  Strength: " + getStrength() +
+                "  Agility: " + getAgility() +
+                "  Intelligence: " + getIntelligence() +
+                "  Gold: " + getGold();
     }
 }

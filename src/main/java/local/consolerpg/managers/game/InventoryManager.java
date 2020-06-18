@@ -33,12 +33,12 @@ public class InventoryManager {
             while (inMenu) {
                 try {
                     printInventory();
-                    System.out.println("1: Equip  2: Drop  3: Compare");
-                    System.out.println("Enter number to choose option or \"E\" to close inventory");
+                    System.out.println("1: Equip  2: Drop  3: Compare  4: Close menu");
+                    System.out.println("Enter number to choose option");
                     String userAnswer = consoleReader.readLine();
                     System.out.println();
 
-                    if (userAnswer.equals("E")) {
+                    if (userAnswer.equals("4")) {
                         System.out.println("Inventory closed");
                         inMenu = false;
 
