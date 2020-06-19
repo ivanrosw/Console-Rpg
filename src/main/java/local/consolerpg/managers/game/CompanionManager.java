@@ -7,7 +7,7 @@ import local.consolerpg.models.game.Companion;
 import local.consolerpg.models.game.Equipment;
 import local.consolerpg.models.game.GameCharacter;
 import local.consolerpg.models.game.Item;
-import local.consolerpg.models.game.concepts.BodyParts;
+import local.consolerpg.models.game.concepts.EquipmentParts;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -297,7 +297,7 @@ public class CompanionManager {
                     List<Equipment> companionUsersEquipments = companion.getUserEquipments();
                     List<Equipment> companionEquipments = companion.getEquipments();
 
-                    if (hasBodyPart(companionUsersEquipments, BodyParts.valueOf(givenEquipment.getBodyPart()))) {
+                    if (hasBodyPart(companionUsersEquipments, EquipmentParts.valueOf(givenEquipment.getBodyPart()))) {
                         for (Equipment equipment : companionUsersEquipments) {
                             if (equipment.getBodyPart().equals(givenEquipment.getBodyPart())) {
                                 companionUsersEquipments.remove(equipment);
@@ -309,7 +309,7 @@ public class CompanionManager {
                         }
                     }
 
-                    if (hasBodyPart(companionEquipments, BodyParts.valueOf(givenEquipment.getBodyPart()))) {
+                    if (hasBodyPart(companionEquipments, EquipmentParts.valueOf(givenEquipment.getBodyPart()))) {
                         for (Equipment equipment : companionEquipments) {
                             if (equipment.getBodyPart().equals(givenEquipment.getBodyPart())) {
                                 companionEquipments.remove(equipment);
@@ -416,7 +416,7 @@ public class CompanionManager {
         }
     }
 
-    private boolean hasBodyPart(List<Equipment> equipments, BodyParts bodyPart) {
+    private boolean hasBodyPart(List<Equipment> equipments, EquipmentParts bodyPart) {
         boolean hasPart = false;
         for (Equipment equipment : equipments) {
             if (equipment.getBodyPart().equals(bodyPart.toString())) {

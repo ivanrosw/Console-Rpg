@@ -6,7 +6,7 @@ import local.consolerpg.managers.exceptions.ManagerException;
 import local.consolerpg.models.game.GameCharacter;
 import local.consolerpg.models.game.Item;
 import local.consolerpg.models.game.builders.EquipmentBuilder;
-import local.consolerpg.models.game.concepts.BodyParts;
+import local.consolerpg.models.game.concepts.EquipmentParts;
 import local.consolerpg.models.game.concepts.HeroClasses;
 
 import java.io.BufferedReader;
@@ -71,7 +71,7 @@ public class GameManager {
                             .withAgility(11)
                             .withIntelligence(12)
                             .withGold(100)
-                            .withBodyPart(BodyParts.Body.toString())
+                            .withBodyPart(EquipmentParts.Body.toString())
                             .build());
                     gameCharacter.setBag(bag);
                 } else if (userAnswer.equals("itemCheat2")) {
@@ -84,7 +84,7 @@ public class GameManager {
                             .withAgility(2)
                             .withIntelligence(3)
                             .withGold(2)
-                            .withBodyPart(BodyParts.Body.toString())
+                            .withBodyPart(EquipmentParts.Body.toString())
                             .build());
                     gameCharacter.setBag(bag);
                 } else {

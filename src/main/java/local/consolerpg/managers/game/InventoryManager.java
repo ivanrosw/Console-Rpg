@@ -4,7 +4,7 @@ import local.consolerpg.managers.exceptions.ManagerException;
 import local.consolerpg.models.game.Equipment;
 import local.consolerpg.models.game.GameCharacter;
 import local.consolerpg.models.game.Item;
-import local.consolerpg.models.game.concepts.BodyParts;
+import local.consolerpg.models.game.concepts.EquipmentParts;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -79,7 +79,7 @@ public class InventoryManager {
         }
     }
 
-    public Equipment getUsingEquipment(BodyParts bodyPart) {
+    public Equipment getUsingEquipment(EquipmentParts bodyPart) {
         List<Equipment> equipments = gameCharacter.getEquipments();
         for (int i = 0; i < equipments.size(); i++) {
             Equipment equipment = equipments.get(i);
@@ -104,7 +104,7 @@ public class InventoryManager {
             int itemIndex = Integer.parseInt(userAnswer) - 1;
             if (isValidToEquipIndex(itemIndex)) {
                 Equipment comparing = (Equipment) bag.get(itemIndex);
-                Equipment equipped = getUsingEquipment(BodyParts.valueOf(comparing.getBodyPart()));
+                Equipment equipped = getUsingEquipment(EquipmentParts.valueOf(comparing.getBodyPart()));
 
                 int compareStrength = comparing.getStrength() - equipped.getStrength();
                 int compareAgility = comparing.getAgility() - equipped.getAgility();
@@ -184,7 +184,7 @@ public class InventoryManager {
             System.out.println("Cant equip this item");
             System.out.println();
         } else {
-            Equipment equipped = getUsingEquipment(BodyParts.valueOf(equipment.getBodyPart()));
+            Equipment equipped = getUsingEquipment(EquipmentParts.valueOf(equipment.getBodyPart()));
             if (equipped != null) {
                 equipments.remove(equipped);
                 bag.add(equipped);

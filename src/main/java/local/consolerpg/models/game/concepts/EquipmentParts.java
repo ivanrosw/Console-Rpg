@@ -1,9 +1,10 @@
 package local.consolerpg.models.game.concepts;
 
-public enum BodyParts {
+public enum EquipmentParts {
     Head,
     Body,
     Hands,
     Legs,
-    Feet
+    Feet,
+    Weapon
 }
