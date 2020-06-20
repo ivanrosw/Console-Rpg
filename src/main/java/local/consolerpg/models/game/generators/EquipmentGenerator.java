@@ -19,7 +19,10 @@ public class EquipmentGenerator {
         HeroClasses[] heroClasses = HeroClasses.values();
         HeroClasses heroClass = heroClasses[random.nextInt(heroClasses.length)];
 
-        int equipmentLevel = level - random.nextInt(5);
+        int equipmentLevel = level + (random.nextInt(10) - 5);
+        if (equipmentLevel <= 0) {
+            equipmentLevel = 1;
+        }
 
         return generateEquipment(equipmentLevel, equipmentPart, heroClass);
     }
@@ -95,6 +98,7 @@ public class EquipmentGenerator {
         int gold =(int)(Math.round(level * 1.25) + Math.round(level * 1.25 / 100 * (random.nextInt(20)-10)));
 
         Equipment equipment = new EquipmentBuilder().withName(name.toString())
+                .withBodyPart(equipmentPart.toString())
                 .withLevel(level)
                 .withHeroClass(heroClass.toString())
                 .withGold(gold)

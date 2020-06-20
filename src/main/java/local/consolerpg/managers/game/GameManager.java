@@ -20,6 +20,7 @@ public class GameManager {
     private GameCharacterManager gameCharacterManager;
     private InventoryManager inventoryManager;
     private CompanionManager companionManager;
+    private TraderManager traderManager;
 
     private BufferedReader consoleReader;
     private GameCharacter gameCharacter;
@@ -30,6 +31,7 @@ public class GameManager {
         gameCharacterManager = new GameCharacterManager(consoleReader, gameCharacter);
         inventoryManager = new InventoryManager(consoleReader, gameCharacter);
         companionManager = new CompanionManager(consoleReader, gameCharacter);
+        traderManager = new TraderManager(consoleReader, gameCharacter);
     }
 
     public void getTavernMenu() {
@@ -52,7 +54,7 @@ public class GameManager {
                 } else if (userAnswer.equals("2")) {
                     inventoryManager.getInventoryMenu();
                 } else if (userAnswer.equals("3")) {
-
+                    traderManager.getTraderMenu();
                 } else if (userAnswer.equals("4")) {
 
                 } else if (userAnswer.equals("5")) {
