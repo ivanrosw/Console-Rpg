@@ -32,7 +32,9 @@ public class GameCharacterManager {
             while (inMenu) {
                 System.out.println("Character Menu");
                 System.out.println("Name: " + gameCharacter.getName());
-                System.out.println("Class: " + gameCharacter.getHeroClass() + "  Level: " + gameCharacter.getLevel());
+                System.out.println("Class: " + gameCharacter.getHeroClass());
+                System.out.println("Level: " + gameCharacter.getLevel() + " Exp: " + gameCharacter.getCurrentExp() + "\\" + gameCharacter.getExp());
+                System.out.println("Hp: " + gameCharacter.getHp() + "  Mp: " + gameCharacter.getMp());
                 System.out.println("Strength: " + gameCharacter.getStrength() + "  Agility: " + gameCharacter.getAgility());
                 System.out.println("Intelligence: " + gameCharacter.getIntelligence());
                 System.out.println("Stat points: " + gameCharacter.getStatPoints());

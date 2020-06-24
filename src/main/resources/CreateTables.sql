@@ -14,10 +14,12 @@ strength bigint DEFAULT 1,
 agility bigint DEFAULT 1,
 intelligence bigint DEFAULT 1,
 hero_class VARCHAR(20),
+current_exp int DEFAULT 0,
 enemies_kill bigint DEFAULT 0,
 quests_done bigint DEFAULT 0,
 game_count int DEFAULT 1,
-gold int DEFAULT 0
+gold int DEFAULT 0,
+complete_game boolean DEFAULT false;
 );
 
 CREATE TABLE characters_equipments(

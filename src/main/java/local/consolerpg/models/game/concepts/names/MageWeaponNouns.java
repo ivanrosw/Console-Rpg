@@ -6,5 +6,6 @@ public enum MageWeaponNouns {
     Cane,
     Rod,
     Wand,
-    Scepter
+    Scepter,
+    Pipe
 }

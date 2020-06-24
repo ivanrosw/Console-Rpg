@@ -7,4 +7,5 @@ public interface UserDao {
     boolean isExistsUsername(String username);
     boolean isCorrectUserPassword(User user);
     long getIdByName(String username);
+    String getNameById(long id);
 }

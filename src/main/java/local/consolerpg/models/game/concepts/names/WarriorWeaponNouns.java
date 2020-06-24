@@ -10,5 +10,6 @@ public enum WarriorWeaponNouns {
     Axe_and_shield,
     Saber,
     Spear,
-    Knife
+    Knife,
+    Pipe
 }

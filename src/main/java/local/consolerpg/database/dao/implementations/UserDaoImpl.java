@@ -19,6 +19,7 @@ public class UserDaoImpl implements UserDao {
     private static final String SQL_CHECK_USERNAME_AND_PASSWORD_QUERY = "SELECT COUNT(*) FROM registered_users " +
             "WHERE username = ? and password = ?";
     private static final String SQL_GET_ID_QUERY = "SELECT id FROM registered_users WHERE username = ?";
+    private static final String SQL_GET_NAME_QUERY = "SELECT username FROM registered_users WHERE id = ?";
 
     @Override
     public void add(User user) {
@@ -100,6 +101,26 @@ public class UserDaoImpl implements UserDao {
         } catch (SQLException e) {
             logger.warn("Get userName: {} id failed", username, e);
             throw new DaoException("Get user id failed", e);
+        }
+    }
+
+    @Override
+    public String getNameById(long id) {
+        logger.debug("Getting username by id: {}", id);
+        try (Connection connection = ConnectionGetter.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_GET_NAME_QUERY)) {
+
+            statement.setLong(1, id);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                resultSet.next();
+                logger.debug("Find user: {} with id: {}", resultSet.getString(1), id);
+                return resultSet.getString(1);
+            }
+
+        } catch (SQLException e) {
+            logger.warn("Get id: {} userName failed", id, e);
+            throw new DaoException("Get username failed", e);
         }
     }
 }

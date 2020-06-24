@@ -53,5 +53,7 @@ public enum EquipmentAdjectives {
     Flaming,
     Crumled,
     Fair,
-    Legendary
+    Legendary,
+    Lead,
+    Furious
 }

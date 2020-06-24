@@ -10,5 +10,6 @@ public enum RogueWeaponNouns {
     Knobstick,
     Dagger,
     Daggers,
-    Knuckles
+    Knuckles,
+    Pipe
 }

@@ -95,6 +95,16 @@ public class GameCharacterBuilder {
         return this;
     }
 
+    public GameCharacterBuilder withCurrentExp(int currentExp) {
+        gameCharacter.setCurrentExp(currentExp);
+        return this;
+    }
+
+    public GameCharacterBuilder isGameComplete(boolean gameComplete) {
+        gameCharacter.setGameComplete(gameComplete);
+        return this;
+    }
+
     public GameCharacter build() {
         return gameCharacter;
     }

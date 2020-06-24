@@ -8,9 +8,13 @@ public class GameCharacter extends BasicHero{
     private long userId;
     private int statPoints;
     private int gold;
+    private int exp;
+    private int currentExp;
     private long enemiesKill;
     private long questsDone;
     private int gameCount;
+    private int useCooldown;
+    private boolean gameComplete;
     private Companion companion;
     private List<Item> bag;
     
@@ -86,10 +90,46 @@ public class GameCharacter extends BasicHero{
         this.bag = bag;
     }
 
+    public int getExp() {
+        return exp;
+    }
+
+    public void setExp(int exp) {
+        this.exp = exp;
+    }
+
+    public int getCurrentExp() {
+        return currentExp;
+    }
+
+    public void setCurrentExp(int currentExp) {
+        this.currentExp = currentExp;
+    }
+
+    public int getUseCooldown() {
+        return useCooldown;
+    }
+
+    public void setUseCooldown(int useCooldown) {
+        this.useCooldown = useCooldown;
+    }
+
+    public boolean isGameComplete() {
+        return gameComplete;
+    }
+
+    public void setGameComplete(boolean gameComplete) {
+        this.gameComplete = gameComplete;
+    }
+
     @Override
     public String toString() {
         return "Name: " + this.getName() +
                 " Class: " + this.getHeroClass() +
-                " Level: " + this.getLevel();
+                " Level: " + this.getLevel() +
+                " Enemies: " + this.getEnemiesKill() +
+                " Quests: " + this.getQuestsDone() +
+                " League: " + this.getGameCount() +
+                " Game complete: " + this.isGameComplete();
     }
 }

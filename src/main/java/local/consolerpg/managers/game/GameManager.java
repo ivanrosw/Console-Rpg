@@ -3,6 +3,7 @@ package local.consolerpg.managers.game;
 import local.consolerpg.database.dao.DaoFactory;
 import local.consolerpg.database.dao.GameCharacterDao;
 import local.consolerpg.managers.exceptions.ManagerException;
+import local.consolerpg.models.game.Companion;
 import local.consolerpg.models.game.GameCharacter;
 import local.consolerpg.models.game.Item;
 import local.consolerpg.models.game.builders.EquipmentBuilder;
@@ -22,6 +23,7 @@ public class GameManager {
     private CompanionManager companionManager;
     private TraderManager traderManager;
     private QuestManager questManager;
+    private LeaderboardManager leaderboardManager;
 
     private BufferedReader consoleReader;
     private GameCharacter gameCharacter;
@@ -34,6 +36,7 @@ public class GameManager {
         companionManager = new CompanionManager(consoleReader, gameCharacter);
         traderManager = new TraderManager(consoleReader, gameCharacter);
         questManager = new QuestManager(consoleReader, gameCharacter);
+        leaderboardManager = new LeaderboardManager(consoleReader, gameCharacter);
     }
 
     public void getTavernMenu() {
@@ -62,7 +65,7 @@ public class GameManager {
                 } else if (userAnswer.equals("5")) {
                     companionManager.getCompanionMenu();
                 } else if (userAnswer.equals("6")) {
-
+                    leaderboardManager.getLeaderboardMenu();
                 } else if (userAnswer.equals("statsCheat")) {
                     gameCharacter.setStatPoints(5);
                 } else if (userAnswer.equals("itemCheat")) {

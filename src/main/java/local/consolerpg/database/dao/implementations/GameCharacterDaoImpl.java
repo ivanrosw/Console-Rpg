@@ -33,8 +33,17 @@ public class GameCharacterDaoImpl implements GameCharacterDao {
     private static final String SQL_GET_ALL_CHARACTERS_EQUIPMENTS_QUERY = "SELECT * FROM characters_equipments WHERE character_id = ?";
     private static final String SQL_GET_ALL_CHARACTERS_BAG_USABLE_QUERY = "SELECT * FROM characters_bag_usable WHERE character_id = ?";
     private static final String SQL_GET_ALL_CHARACTERS_BAG_EQUIPMENTS_QUERY = "SELECT * FROM characters_bag_equipments WHERE character_id = ?";
+    private static final String SQL_GET_FIRST_BY_LEVEL_QUERY = "SELECT * FROM users_characters ORDER BY level DESC FETCH FIRST 50 ROWS ONLY";
+    private static final String SQL_GET_FIRST_BY_KILLS_QUERY = "SELECT * FROM users_characters ORDER BY enemies_kill DESC FETCH FIRST 50 ROWS ONLY";
+    private static final String SQL_GET_FIRST_BY_QUESTS_QUERY = "SELECT * FROM users_characters ORDER BY quests_done DESC FETCH FIRST 50 ROWS ONLY";
+    private static final String SQL_GET_FIRST_BY_LEVEL_GAME_COUNT_QUERY = "SELECT * FROM (SELECT * FROM users_characters WHERE game_count=? AND complete_game = true) AS ch " +
+            "ORDER BY level ASC FETCH FIRST 50 ROWS ONLY";
+    private static final String SQL_GET_FIRST_BY_KILLS_GAME_COUNT_QUERY = "SELECT * FROM (SELECT * FROM users_characters WHERE game_count=? AND complete_game = true) AS ch " +
+            "ORDER BY enemies_kill ASC FETCH FIRST 50 ROWS ONLY";
+    private static final String SQL_GET_FIRST_BY_QUESTS_GAME_COUNT_QUERY = "SELECT * FROM (SELECT * FROM users_characters WHERE game_count=? AND complete_game = true) AS ch " +
+            "ORDER BY quests_done ASC FETCH FIRST 50 ROWS ONLY";
     private static final String SQL_UPDATE_QUERY = "UPDATE users_characters SET name=?, level=?, strength=?, agility=?, intelligence=?, " +
-            "hero_class=?, enemies_kill=?, quests_done=?, game_count=?, gold=?, stat_points=? WHERE id = ?";
+            "hero_class=?, enemies_kill=?, quests_done=?, game_count=?, gold=?, stat_points=?, current_exp=?, complete_game=? WHERE id = ?";
     private static final String SQL_DELETE_CHARACTER_EQUIPMENT_QUERY = "DELETE FROM characters_equipments WHERE character_id = ?";
     private static final String SQL_DELETE_CHARACTER_BAG_USABLE_QUERY = "DELETE FROM characters_bag_usable WHERE character_id = ?";
     private static final String SQL_DELETE_CHARACTER_BAG_EQUIPMENT_QUERY = "DELETE FROM characters_bag_equipments WHERE character_id = ?";
@@ -103,7 +112,7 @@ public class GameCharacterDaoImpl implements GameCharacterDao {
     }
 
     @Override
-    public List<GameCharacter> getAllByUserId(long userId) {
+    public List<GameCharacter> getAll(long userId) {
         logger.debug("Getting all users's with id: {} game characters", userId);
         try (Connection connection = ConnectionGetter.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_GET_ALL_USER_CHARACTERS_QUERY)) {
@@ -134,6 +143,126 @@ public class GameCharacterDaoImpl implements GameCharacterDao {
     }
 
     @Override
+    public List<GameCharacter> getFirstByLevel() {
+        try (Connection connection = ConnectionGetter.getConnection();
+        Statement statement = connection.createStatement()) {
+
+            List<GameCharacter> gameCharacters = new ArrayList<>();
+            try (ResultSet resultSet = statement.executeQuery(SQL_GET_FIRST_BY_LEVEL_QUERY)) {
+                while (resultSet.next()) {
+                    gameCharacters.add(getGameCharacter(resultSet));
+                }
+            }
+
+            return gameCharacters;
+
+        } catch (SQLException e) {
+            throw new DaoException("Getting firsts by level failed", e);
+        }
+    }
+
+    @Override
+    public List<GameCharacter> getFirstByKills() {
+        try (Connection connection = ConnectionGetter.getConnection();
+             Statement statement = connection.createStatement()) {
+
+            List<GameCharacter> gameCharacters = new ArrayList<>();
+            try (ResultSet resultSet = statement.executeQuery(SQL_GET_FIRST_BY_KILLS_QUERY)) {
+                while (resultSet.next()) {
+                    gameCharacters.add(getGameCharacter(resultSet));
+                }
+            }
+
+            return gameCharacters;
+
+        } catch (SQLException e) {
+            throw new DaoException("Getting firsts by kills failed", e);
+        }
+    }
+
+    @Override
+    public List<GameCharacter> getFirstByQuests() {
+        try (Connection connection = ConnectionGetter.getConnection();
+             Statement statement = connection.createStatement()) {
+
+            List<GameCharacter> gameCharacters = new ArrayList<>();
+            try (ResultSet resultSet = statement.executeQuery(SQL_GET_FIRST_BY_QUESTS_QUERY)) {
+                while (resultSet.next()) {
+                    gameCharacters.add(getGameCharacter(resultSet));
+                }
+            }
+
+            return gameCharacters;
+
+        } catch (SQLException e) {
+            throw new DaoException("Getting firsts by quests failed", e);
+        }
+    }
+
+    @Override
+    public List<GameCharacter> getFirstByLevel(int gameCount) {
+        try (Connection connection = ConnectionGetter.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_GET_FIRST_BY_LEVEL_GAME_COUNT_QUERY)) {
+
+            statement.setInt(1, gameCount);
+
+            List<GameCharacter> gameCharacters = new ArrayList<>();
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    gameCharacters.add(getGameCharacter(resultSet));
+                }
+            }
+
+            return gameCharacters;
+
+        } catch (SQLException e) {
+            throw new DaoException("Getting firsts by level failed", e);
+        }
+    }
+
+    @Override
+    public List<GameCharacter> getFirstByKills(int gameCount) {
+        try (Connection connection = ConnectionGetter.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_GET_FIRST_BY_KILLS_GAME_COUNT_QUERY)) {
+
+            statement.setInt(1, gameCount);
+
+            List<GameCharacter> gameCharacters = new ArrayList<>();
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    gameCharacters.add(getGameCharacter(resultSet));
+                }
+            }
+
+            return gameCharacters;
+
+        } catch (SQLException e) {
+            throw new DaoException("Getting firsts by level failed", e);
+        }
+    }
+
+    @Override
+    public List<GameCharacter> getFirstByQuests(int gameCount) {
+        try (Connection connection = ConnectionGetter.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_GET_FIRST_BY_QUESTS_GAME_COUNT_QUERY)) {
+
+            statement.setInt(1, gameCount);
+
+            List<GameCharacter> gameCharacters = new ArrayList<>();
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    gameCharacters.add(getGameCharacter(resultSet));
+                }
+            }
+
+            return gameCharacters;
+
+        } catch (SQLException e) {
+            throw new DaoException("Getting firsts by level failed", e);
+        }
+    }
+
+    @Override
     public void update(GameCharacter gameCharacter) {
         logger.debug("Updating {} in database", gameCharacter);
         try (Connection connection = ConnectionGetter.getConnection();
@@ -150,7 +279,9 @@ public class GameCharacterDaoImpl implements GameCharacterDao {
             statement.setInt(9, gameCharacter.getGameCount());
             statement.setInt(10, gameCharacter.getGold());
             statement.setInt(11, gameCharacter.getStatPoints());
-            statement.setLong(12, gameCharacter.getId());
+            statement.setInt(12, gameCharacter.getCurrentExp());
+            statement.setBoolean(13, gameCharacter.isGameComplete());
+            statement.setLong(14, gameCharacter.getId());
 
             statement.execute();
 
@@ -279,6 +410,8 @@ public class GameCharacterDaoImpl implements GameCharacterDao {
                     .withGameCount(resultSet.getInt("game_count"))
                     .withGold(resultSet.getInt("gold"))
                     .withStatPoints(resultSet.getInt("stat_points"))
+                    .withCurrentExp(resultSet.getInt("current_exp"))
+                    .isGameComplete(resultSet.getBoolean("complete_game"))
                     .build();
         } catch (SQLException e) {
             logger.warn("Getting character from ResultSet failed", e);

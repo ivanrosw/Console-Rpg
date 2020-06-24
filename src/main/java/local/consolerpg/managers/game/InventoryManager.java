@@ -195,6 +195,8 @@ public class InventoryManager {
             gameCharacter.setBag(bag);
         }
 
+        calculateStats(gameCharacter);
+
         System.out.println("Equipped " + equipment.getName());
     }
 
@@ -210,5 +212,32 @@ public class InventoryManager {
                 System.out.println(EMPTY_SLOT);
             }
         }
+    }
+
+    private void calculateStats(GameCharacter gameCharacter) {
+        int totalStrength = gameCharacter.getStrength();
+        int totalAgility = gameCharacter.getAgility();
+        int totalIntelligence = gameCharacter.getIntelligence();
+
+        List<Equipment> equipments = gameCharacter.getEquipments();
+        for (Equipment equipment : equipments) {
+            totalAgility += equipment.getAgility();
+            totalStrength += equipment.getStrength();
+            totalIntelligence += equipment.getIntelligence();
+        }
+
+        int hp = totalStrength * 10;
+        int mp = totalIntelligence * 10;
+
+        int totalStats = totalStrength + totalAgility + totalIntelligence;
+
+        gameCharacter.setTotalStrength(totalStrength);
+        gameCharacter.setTotalAgility(totalAgility);
+        gameCharacter.setTotalIntelligence(totalIntelligence);
+        gameCharacter.setTotalStats(totalStats);
+        gameCharacter.setHp(hp);
+        gameCharacter.setCurrentHp(hp);
+        gameCharacter.setMp(mp);
+        gameCharacter.setCurrentMp(mp);
     }
 }

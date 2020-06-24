@@ -19,4 +19,12 @@ public class Enemy extends BasicHero{
     public void setExperience(int experience) {
         this.experience = experience;
     }
+
+    @Override
+    public String toString() {
+        return "Enemy: " + getName() +
+                "  Level: " + getLevel() +
+                "  HP: " + getCurrentHp() + "\\" + getHp() +
+                "  MP: " + getCurrentMp() + "\\" + getMp();
+    }
 }

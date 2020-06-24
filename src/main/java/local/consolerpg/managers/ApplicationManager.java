@@ -2,6 +2,7 @@ package local.consolerpg.managers;
 
 import local.consolerpg.database.dao.DaoFactory;
 import local.consolerpg.database.dao.GameCharacterDao;
+import local.consolerpg.models.game.Equipment;
 import local.consolerpg.models.game.concepts.HeroClasses;
 import local.consolerpg.managers.exceptions.AuthorizationException;
 import local.consolerpg.managers.exceptions.ManagerException;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ApplicationManager {
+
+    private static final String VERSION = "0.4 beta";
 
     private static final Logger logger = LoggerFactory.getLogger(ApplicationManager.class);
     private static final BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
@@ -90,8 +93,10 @@ public class ApplicationManager {
 
         while (user == null) {
             try {
+                System.out.println("Console RPG");
                 System.out.println("1: Login");
                 System.out.println("2: Register");
+                System.out.println("version: " + VERSION);
                 System.out.println("Enter a number to choose option or \"E\" to exit");
 
                 String userAnswer = consoleReader.readLine();
@@ -128,7 +133,7 @@ public class ApplicationManager {
     private void getLoadMenu() {
         logger.debug("Getting load menu");
         gameCharacter = null;
-        List<GameCharacter> characters = gameCharacterDao.getAllByUserId(user.getId());
+        List<GameCharacter> characters = gameCharacterDao.getAll(user.getId());
 
         printSaves(characters);
 
@@ -151,6 +156,13 @@ public class ApplicationManager {
 
                     } else if (saveNumber <= characters.size() && saveNumber >= 1) {
                         gameCharacter = characters.get(saveNumber - 1);
+                        calculateStats(gameCharacter);
+
+                        if (gameCharacter.isGameComplete()) {
+                            gameCharacter.setGameComplete(false);
+                            gameCharacter.setGameCount(gameCharacter.getGameCount() + 1);
+                        }
+
                         logger.debug("Loaded {}", gameCharacter);
                         System.out.println("Loaded " + gameCharacter);
                         System.out.println();
@@ -188,7 +200,7 @@ public class ApplicationManager {
         logger.debug("Starting new game");
         gameCharacter = null;
         try {
-            List<GameCharacter> characters = gameCharacterDao.getAllByUserId(user.getId());
+            List<GameCharacter> characters = gameCharacterDao.getAll(user.getId());
 
             logger.debug("Check saves count");
             long newGameCharacterId = 0;
@@ -280,6 +292,16 @@ public class ApplicationManager {
     private void generateNewHero(GameCharacter gameCharacter) {
         logger.debug("Generating stats to new game character: {}", gameCharacter);
         gameCharacter.setLevel(1);
+
+        int hp = gameCharacter.getStrength() * 10;
+        gameCharacter.setHp(hp);
+        gameCharacter.setCurrentHp(hp);
+
+        int mp = gameCharacter.getIntelligence() * 10;
+        gameCharacter.setMp(mp);
+        gameCharacter.setCurrentMp(mp);
+
+        gameCharacter.setExp(50);
         gameCharacter.setGameCount(1);
         gameCharacter.setBag(new ArrayList<>());
         gameCharacter.setEquipments(new ArrayList<>());
@@ -287,18 +309,57 @@ public class ApplicationManager {
 
         if(gameCharacter.getHeroClass().equals(HeroClasses.Warriror.toString())) {
             gameCharacter.setStrength(2);
+            gameCharacter.setTotalStrength(2);
             gameCharacter.setAgility(1);
+            gameCharacter.setTotalAgility(1);
             gameCharacter.setIntelligence(1);
+            gameCharacter.setTotalIntelligence(1);
         } else if (gameCharacter.getHeroClass().equals(HeroClasses.Rogue.toString())) {
             gameCharacter.setStrength(1);
+            gameCharacter.setTotalStrength(1);
             gameCharacter.setAgility(2);
+            gameCharacter.setTotalAgility(2);
             gameCharacter.setIntelligence(1);
+            gameCharacter.setTotalIntelligence(1);
         } else if (gameCharacter.getHeroClass().equals(HeroClasses.Mage.toString())) {
             gameCharacter.setStrength(1);
+            gameCharacter.setTotalStrength(1);
             gameCharacter.setAgility(1);
+            gameCharacter.setTotalAgility(1);
             gameCharacter.setIntelligence(2);
+            gameCharacter.setTotalIntelligence(2);
         }
         logger.debug("Generated stats to new game character {}", gameCharacter);
+    }
+
+    private void calculateStats(GameCharacter gameCharacter) {
+        int exp = (int) Math.round(50 * Math.pow(1.75, gameCharacter.getLevel() - 1));
+
+        int totalStrength = gameCharacter.getStrength();
+        int totalAgility = gameCharacter.getAgility();
+        int totalIntelligence = gameCharacter.getIntelligence();
+
+        List<Equipment> equipments = gameCharacter.getEquipments();
+        for (Equipment equipment : equipments) {
+            totalAgility += equipment.getAgility();
+            totalStrength += equipment.getStrength();
+            totalIntelligence += equipment.getIntelligence();
+        }
+
+        int hp = totalStrength * 10;
+        int mp = totalIntelligence * 10;
+
+        int totalStats = totalStrength + totalAgility + totalIntelligence;
+
+        gameCharacter.setExp(exp);
+        gameCharacter.setTotalStrength(totalStrength);
+        gameCharacter.setTotalAgility(totalAgility);
+        gameCharacter.setTotalIntelligence(totalIntelligence);
+        gameCharacter.setTotalStats(totalStats);
+        gameCharacter.setHp(hp);
+        gameCharacter.setCurrentHp(hp);
+        gameCharacter.setMp(mp);
+        gameCharacter.setCurrentMp(mp);
     }
 
     private void startGame() {

@@ -111,7 +111,7 @@ public class EquipmentGenerator {
 
     private void generateStats(Equipment equipment) {
         Random random = new Random();
-        int totalStats = equipment.getLevel() * 5 + Math.round(equipment.getLevel() * 5 / 100 * (random.nextInt(20)-10));
+        int totalStats = (int) (equipment.getLevel() * 5 + Math.round(equipment.getLevel() * 5 / 100.0 * (random.nextInt(20)-10)));
 
         for (int i = 0; i < totalStats; i++) {
             int statIndex = random.nextInt(3);

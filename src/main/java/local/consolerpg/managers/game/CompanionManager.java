@@ -73,6 +73,10 @@ public class CompanionManager {
                     getDismissCompanionMenu();
                 } else if (userAnswer.equals("3")) {
                     getGiveEquipmentMenu();
+                } else if (userAnswer.equals("4")) {
+                    getTakeEquipmentMenu();
+                } else {
+                    System.out.println("Entered wrong symbol");
                 }
             }
         } catch (IOException e) {
@@ -178,41 +182,62 @@ public class CompanionManager {
             }
 
             while (gameCharacter.getCompanion() == null) {
-                System.out.println("Enter number of companion that you want to hire or \"E\" to cancel hiring");
-                String userAnswer = consoleReader.readLine();
+                try {
+                    System.out.println("Enter number of companion that you want to hire or \"E\" to cancel hiring");
+                    String userAnswer = consoleReader.readLine();
 
-                if (userAnswer.equals("E")) {
-                    System.out.println("Hiring companion canceled");
-                    System.out.println();
-                    return;
-                } else if (userAnswer.equals("1")) {
-                    if (resultCompanions.size() > 0) {
-                        gameCharacter.setCompanion(resultCompanions.get(0));
-                        System.out.println("Companion hired");
+                    if (userAnswer.equals("E")) {
+                        System.out.println("Hiring companion canceled");
+                        System.out.println();
+                        return;
                     } else {
-                        System.out.println("Chosen empty slot");
+                        int companionIndex = Integer.parseInt(userAnswer) - 1;
+
+                        if (companionIndex >= resultCompanions.size() || companionIndex < 0) {
+                            System.out.println("Chosen empty slot");
+                            continue;
+                        }
+
+                        Companion companion = resultCompanions.get(companionIndex);
+                        calculateStats(companion);
+                        gameCharacter.setCompanion(companion);
+                        System.out.println("Hired " + companion.getName());
+                        System.out.println();
+
                     }
-                } else if (userAnswer.equals("2")) {
-                    if (resultCompanions.size() > 1) {
-                        gameCharacter.setCompanion(resultCompanions.get(1));
-                        System.out.println("Companion hired");
-                    } else {
-                        System.out.println("Chosen empty slot");
-                    }
-                } else if (userAnswer.equals(3)) {
-                    if (resultCompanions.size() > 2) {
-                        gameCharacter.setCompanion(resultCompanions.get(2));
-                        System.out.println("Companion hired");
-                    } else {
-                        System.out.println("Chosen empty slot");
-                    }
-                } else {
-                    System.out.println("Entered wrong symbol");
+                } catch (NumberFormatException e) {
+                    System.out.println("Entered wrong number");
                 }
             }
         }catch (IOException e) {
             throw new ManagerException("Internal consoleReader error", e);
         }
+    }
+
+    private void calculateStats(Companion companion) {
+        int totalStrength = companion.getStrength();
+        int totalAgility = companion.getAgility();
+        int totalIntelligence = companion.getIntelligence();
+
+        for (Equipment equipment : companion.getEquipments()) {
+            totalStrength += equipment.getStrength();
+            totalAgility += equipment.getAgility();
+            totalIntelligence += equipment.getIntelligence();
+        }
+
+        int totalStats = totalStrength + totalAgility + totalIntelligence;
+
+        int hp = totalStrength * 10;
+        int mp = totalIntelligence * 10;
+
+        companion.setTotalStrength(totalStrength);
+        companion.setTotalAgility(totalAgility);
+        companion.setTotalIntelligence(totalIntelligence);
+        companion.setTotalStats(totalStats);
+        companion.setCurrentHp(hp);
+        companion.setHp(hp);
+        companion.setCurrentMp(mp);
+        companion.setMp(mp);
     }
 
     private void getGiveEquipmentMenu() {
@@ -326,6 +351,7 @@ public class CompanionManager {
                     System.out.println("Equipment given to companion");
                 }
 
+                calculateStats(companion);
                 gameCharacter.setCompanion(companion);
                 gameCharacter.setBag(bag);
 
