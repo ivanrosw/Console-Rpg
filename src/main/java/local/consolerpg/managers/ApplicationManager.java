@@ -277,8 +277,13 @@ public class ApplicationManager {
             newGameCharacter.setName(gameCharacterName);
             newGameCharacter.setHeroClass(gameCharacterClass);
             generateNewHero(newGameCharacter);
+
+            GameCharacterDao characterDao = DaoFactory.getGameCharacterDao();
             if (newGameCharacterId > 0) {
                 newGameCharacter.setId(newGameCharacterId);
+                characterDao.update(newGameCharacter);
+            } else {
+                characterDao.add(newGameCharacter);
             }
             gameCharacter = newGameCharacter;
             logger.debug("Created new game character {}", gameCharacter);
@@ -292,14 +297,6 @@ public class ApplicationManager {
     private void generateNewHero(GameCharacter gameCharacter) {
         logger.debug("Generating stats to new game character: {}", gameCharacter);
         gameCharacter.setLevel(1);
-
-        int hp = gameCharacter.getStrength() * 10;
-        gameCharacter.setHp(hp);
-        gameCharacter.setCurrentHp(hp);
-
-        int mp = gameCharacter.getIntelligence() * 10;
-        gameCharacter.setMp(mp);
-        gameCharacter.setCurrentMp(mp);
 
         gameCharacter.setExp(50);
         gameCharacter.setGameCount(1);
@@ -329,6 +326,15 @@ public class ApplicationManager {
             gameCharacter.setIntelligence(2);
             gameCharacter.setTotalIntelligence(2);
         }
+
+        int hp = gameCharacter.getTotalStrength() * 10;
+        gameCharacter.setHp(hp);
+        gameCharacter.setCurrentHp(hp);
+
+        int mp = gameCharacter.getTotalIntelligence() * 10;
+        gameCharacter.setMp(mp);
+        gameCharacter.setCurrentMp(mp);
+
         logger.debug("Generated stats to new game character {}", gameCharacter);
     }
 
